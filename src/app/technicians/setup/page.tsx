@@ -37,7 +37,14 @@ export default function TechnicianSetupPage() {
   // profile এলে form field গুলো prefill করি
   useEffect(() => {
     if (!existing) return;
-    setSkills(existing.skills ?? []);
+    // backend skill lowercase-এ রাখে ("ac"), কিন্তু button গুলো "AC" ব্যবহার করে।
+    // তাই stored skill-কে ফিরিয়ে canonical label-এ মেলাই, নাহলে selected দেখাবে না।
+    setSkills(
+      (existing.skills ?? []).map(
+        (s: string) =>
+          categories.find((c) => c.toLowerCase() === s.toLowerCase()) ?? s
+      )
+    );
     setServiceAreas((existing.serviceAreas ?? []).join(", "));
     setExperience(String(existing.experience ?? ""));
     setBio(existing.bio ?? "");

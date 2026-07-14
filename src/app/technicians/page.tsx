@@ -22,6 +22,15 @@ interface Technician {
 // diagnosis/repair-এর সাথে মিল রেখে একই category গুলো
 const categories = ["AC", "Plumbing", "Electrical", "Appliance"];
 
+// backend-এ skill lowercase-এ রাখা ("ac"), কিন্তু দেখানোর সময় সুন্দর label চাই।
+// অজানা skill হলে capitalize class ঠিকঠাক দেখাবে, তাই map-এ না থাকলেও সমস্যা নেই।
+const skillLabel: Record<string, string> = {
+  ac: "AC",
+  plumbing: "Plumbing",
+  electrical: "Electrical",
+  appliance: "Appliance",
+};
+
 export default function TechniciansPage() {
   // filter state — যা বাছাই হবে সেটা query-তে পাঠাব
   const [category, setCategory] = useState("");
@@ -123,7 +132,7 @@ export default function TechniciansPage() {
                       key={s}
                       className="rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-medium capitalize text-brand-700"
                     >
-                      {s}
+                      {skillLabel[s] ?? s}
                     </span>
                   ))}
                 </div>
