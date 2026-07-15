@@ -8,6 +8,21 @@ Web client for **Mistiri**, a smart home-maintenance platform. Customers describ
 
 ---
 
+## 🏠 প্রজেক্ট পরিচিতি (Bangla)
+
+**Mistiri** একটি স্মার্ট হোম-মেইনটেন্যান্স প্ল্যাটফর্ম। ব্যবহারকারী ঘরের কোনো সমস্যা
+(AC, electrical বা plumbing) নিজের ভাষায় লেখেন → সঙ্গে সঙ্গে সম্ভাব্য কারণ ও
+আনুমানিক খরচের ধারণা পান → এলাকা ও দক্ষতা অনুযায়ী উপযুক্ত মিস্ত্রি খুঁজে booking
+দেন → কাজের অবস্থা track করেন → শেষে রিভিউ দেন।
+
+এই repo-টি হলো **frontend** — Next.js + TypeScript + Tailwind CSS দিয়ে তৈরি।
+এতে আছে একটি landing page, technician explore ও details page, এবং **গ্রাহক**,
+**মিস্ত্রি** ও **অ্যাডমিন** — তিন role-এর আলাদা dashboard। সমস্যা জমা দেওয়া,
+মিস্ত্রি booking, কাজ track ও রিভিউ — পুরো অভিজ্ঞতা এখান থেকেই ব্যবহার করা যায়।
+পুরো UI সব device-এ responsive এবং amber-slate একটি ধারাবাহিক থিমে সাজানো।
+
+---
+
 ## Tech Stack
 
 - **Next.js 16** (App Router) + **React 19** + **TypeScript**
