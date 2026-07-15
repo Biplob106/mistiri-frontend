@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { api } from "@/lib/api";
 
 export default function RegisterPage() {
@@ -31,7 +32,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-gray-50">
+      {/* লোগো — ক্লিক করলে হোম পেজে ফিরে যায় */}
+      <Link
+        href="/"
+        className="text-2xl font-bold tracking-tight text-brand-600 hover:text-brand-700"
+      >
+        Mistiri
+      </Link>
       <div className="w-full max-w-sm rounded-lg bg-white p-8 shadow">
         <h1 className="mb-6 text-2xl font-bold text-gray-800">Register</h1>
 
