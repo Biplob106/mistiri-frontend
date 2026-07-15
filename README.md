@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mistiri — Frontend
+
+Web client for **Mistiri**, a smart home-maintenance platform. Customers describe a repair problem, get an instant rule-based diagnosis with an estimated cost, browse and book verified technicians, then track the job — with separate dashboards for customers, technicians, and admins.
+
+**Live site:** https://mistiri-frontend.vercel.app
+**Backend repo:** https://github.com/Biplob106/mistiri-backend
+**Live API:** https://mistiri-backend.vercel.app/api
+
+---
+
+## Tech Stack
+
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** (custom `brand` amber + `ink` slate theme)
+- **TanStack Query** for data fetching, **Axios** API client
+- **Recharts** for dashboard analytics
+- **Google Identity Services** for social login
+- Deployed on **Vercel**
+
+---
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. install
+npm install
+
+# 2. create .env.local (see below)
+
+# 3. run in dev
+npm run dev            # http://localhost:3000
+
+# 4. production build
+npm run build
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copy `.env.example` to `.env.local`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+# Backend API base URL (must include /api)
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
 
-## Learn More
+# Google Sign-In (optional) — leave blank to hide the button
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=<xxxxx.apps.googleusercontent.com>
+```
 
-To learn more about Next.js, take a look at the following resources:
+> `NEXT_PUBLIC_*` values are baked in at **build time**. On Vercel they're set in
+> Project → Settings → Environment Variables, then the project is redeployed.
+> For Google login, add your site to **Authorized JavaScript origins** in Google Cloud Console.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Demo login
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The login page has one-click **Customer** / **Admin** demo buttons (seed the backend with `npm run seed:demo` first):
 
-## Deploy on Vercel
+| Role | Email | Password |
+|------|-------|----------|
+| Customer | `customer@mistiri.app` | `Demo@1234` |
+| Admin | `admin@mistiri.app` | `Admin@1234` |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Routes
+
+**Public**
+| Route | Page |
+|-------|------|
+| `/` | Landing (hero, categories, how-it-works, features, FAQ, footer) |
+| `/technicians` | Explore — search, category/area filters, sorting, pagination |
+| `/technicians/[id]` | Technician details (public) |
+| `/about`, `/contact` | About & Contact |
+| `/login`, `/register` | Auth (validation, demo login, Google Sign-In) |
+
+**Customer** (login-gated)
+| Route | Page |
+|-------|------|
+| `/dashboard` | Customer dashboard (stats + charts) |
+| `/repair/add` | New repair request *(alias: `/items/add`)* |
+| `/repair/my` | Manage requests — View / Delete *(alias: `/items/manage`)* |
+| `/repair/[id]` | Request details + diagnosis + book a technician |
+| `/bookings` | My bookings + reviews |
+
+**Technician**
+| Route | Page |
+|-------|------|
+| `/technician/dashboard` | Job summary + profile status |
+| `/technician/jobs` | Assigned jobs, advance status |
+| `/technicians/setup` | Create / edit profile |
+
+**Admin**
+| Route | Page |
+|-------|------|
+| `/admin/dashboard` | Platform analytics + action cards |
+| `/admin/technicians` | Verify / unverify technicians |
+| `/admin/users` | Manage / delete users |
+| `/admin/bookings` | All bookings |
+
+Role-based routing is enforced with a `useAuthGuard(role)` hook — wrong-role users are redirected to their own dashboard, logged-out users to `/login`.
+
+---
+
+## Project Structure
+
+```
+src/
+  app/                 # App Router pages (see Routes above)
+  components/
+    dashboard.tsx      # NavBar, DashboardShell, StatCard, charts, skeletons
+    site.tsx           # public sticky header + footer (SiteHeader/SiteFooter)
+    GoogleLoginButton.tsx
+    ui/                # Input, Button
+  lib/
+    api.ts             # axios instance (baseURL + token interceptor)
+    useAuth.ts         # useAuthGuard, useOptionalAuth, role → path map, logout
+  app/globals.css      # Tailwind theme (@theme brand + ink tokens)
+```
+
+## Design System
+
+- **brand** = amber scale (`bg-brand-500`, `text-brand-600`, …) — primary
+- **ink** = slate scale (`text-ink-900`, `border-ink-100`, …) — neutral
+- green / red used only for status (verified, completed, delete)
+- Cards: `rounded-xl border border-ink-100 bg-white shadow-sm`
+- Fully responsive (mobile hamburger nav, `sm`/`lg` breakpoints)
+
+## Features
+
+- Sticky, responsive, auth-aware navigation + full footer (contact + social) on every page
+- Explore listing with 4-per-row cards, search, filters, sorting, pagination, skeleton loaders
+- Public technician details pages
+- Role-based dashboards with Recharts analytics
+- Protected add/manage flows with client-side validation
+- Email/password + demo + Google login
