@@ -1,8 +1,13 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import { api } from "@/lib/api";
+import { useAuthGuard } from "@/lib/useAuth";
+import {
+  DashboardShell,
+  LoadingScreen,
+  PageTitle,
+} from "@/components/dashboard";
 
 // technician-এর কাছে আসা একটা কাজ (booking) দেখতে কেমন
 interface Job {
@@ -113,50 +118,45 @@ function JobCard({ job }: { job: Job }) {
 }
 
 export default function TechnicianJobsPage() {
+  const { user, checking } = useAuthGuard("technician");
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["assigned-jobs"],
+    enabled: !!user,
     queryFn: async () => {
       const res = await api.get("/bookings/assigned");
       return res.data.bookings as Job[];
     },
   });
 
+  if (checking) return <LoadingScreen />;
+
   return (
-    <div className="min-h-screen bg-ink-50 p-8">
-      <div className="mx-auto max-w-3xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-ink-900">My Jobs</h1>
-          <Link
-            href="/technician/dashboard"
-            className="text-sm font-medium text-brand-600 hover:underline"
-          >
-            ← Dashboard
-          </Link>
+    <DashboardShell user={user} width="md">
+      <PageTitle>My Jobs</PageTitle>
+
+      {isLoading && <p className="text-ink-500">Loading...</p>}
+
+      {isError && (
+        <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
+          Could not load your jobs. Please make sure you are logged in as a
+          technician.
+        </p>
+      )}
+
+      {data && data.length === 0 && (
+        <div className="rounded-xl border border-ink-100 bg-white p-8 text-center">
+          <p className="text-ink-500">No jobs assigned yet.</p>
         </div>
+      )}
 
-        {isLoading && <p className="text-ink-500">Loading...</p>}
-
-        {isError && (
-          <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
-            Could not load your jobs. Please make sure you are logged in as a
-            technician.
-          </p>
-        )}
-
-        {data && data.length === 0 && (
-          <div className="rounded-xl border border-ink-100 bg-white p-8 text-center">
-            <p className="text-ink-500">No jobs assigned yet.</p>
-          </div>
-        )}
-
-        {data && data.length > 0 && (
-          <div className="space-y-3">
-            {data.map((job) => (
-              <JobCard key={job._id} job={job} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+      {data && data.length > 0 && (
+        <div className="space-y-3">
+          {data.map((job) => (
+            <JobCard key={job._id} job={job} />
+          ))}
+        </div>
+      )}
+    </DashboardShell>
   );
 }

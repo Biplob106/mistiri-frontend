@@ -7,12 +7,15 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { useAuthGuard } from "@/lib/useAuth";
+import { DashboardShell, LoadingScreen } from "@/components/dashboard";
 
 // repair/diagnosis-এর সাথে মিল রেখে একই category গুলো — এগুলোই skill
 const categories = ["AC", "Plumbing", "Electrical", "Appliance"];
 
 export default function TechnicianSetupPage() {
   const router = useRouter();
+  const { user, checking } = useAuthGuard("technician");
 
   // form-এর সব field আলাদা state-এ রাখি
   const [skills, setSkills] = useState<string[]>([]);
@@ -99,23 +102,26 @@ export default function TechnicianSetupPage() {
     mutation.mutate();
   };
 
-  return (
-    <div className="min-h-screen bg-ink-50 p-8">
-      <div className="mx-auto max-w-2xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-ink-900">My Technician Profile</h1>
-          <Link
-            href="/technicians"
-            className="text-sm font-medium text-brand-600 hover:underline"
-          >
-            View list →
-          </Link>
-        </div>
+  if (checking) return <LoadingScreen />;
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5 rounded-xl border border-ink-100 bg-white p-6 shadow-sm"
+  return (
+    <DashboardShell user={user} width="sm">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-ink-900">
+          My Technician Profile
+        </h1>
+        <Link
+          href="/technicians"
+          className="text-sm font-medium text-brand-600 hover:underline"
         >
+          View list →
+        </Link>
+      </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5 rounded-xl border border-ink-100 bg-white p-6 shadow-sm"
+      >
           {/* skills — category গুলো checkbox হিসেবে */}
           <div>
             <label className="mb-2 block text-sm font-medium text-ink-700">
@@ -221,7 +227,6 @@ export default function TechnicianSetupPage() {
             {mutation.isPending ? "Saving..." : "Save Profile"}
           </Button>
         </form>
-      </div>
-    </div>
+    </DashboardShell>
   );
 }

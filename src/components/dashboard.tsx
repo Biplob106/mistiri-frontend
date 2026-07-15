@@ -61,7 +61,6 @@ const NAV_LINKS: Record<Role, { href: string; label: string }[]> = {
   admin: [
     { href: "/admin/dashboard", label: "Dashboard" },
     { href: "/technicians", label: "Technicians" },
-    { href: "/bookings", label: "Bookings" },
   ],
 };
 
@@ -135,19 +134,31 @@ export function Footer() {
   );
 }
 
+// content-এর সর্বোচ্চ প্রস্থ — পেজভেদে আলাদা (form সরু, list চওড়া)
+const SHELL_WIDTHS = {
+  sm: "max-w-2xl",
+  md: "max-w-3xl",
+  lg: "max-w-4xl",
+  xl: "max-w-5xl",
+} as const;
+
 // dashboard পেজের সাধারণ খোল — navbar + মাঝের content + footer।
 // এতে প্রতিটা পেজে একই navbar/footer বসানো সহজ হয়।
 export function DashboardShell({
   user,
   children,
+  width = "xl",
 }: {
   user: AuthUser | null;
   children: React.ReactNode;
+  width?: keyof typeof SHELL_WIDTHS;
 }) {
   return (
     <div className="flex min-h-screen flex-col bg-ink-50">
       <NavBar user={user} />
-      <main className="mx-auto w-full max-w-5xl flex-1 p-6 sm:p-8">
+      <main
+        className={`mx-auto w-full ${SHELL_WIDTHS[width]} flex-1 p-6 sm:p-8`}
+      >
         {children}
       </main>
       <Footer />

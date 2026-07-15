@@ -4,6 +4,12 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { api } from "@/lib/api";
+import { useAuthGuard } from "@/lib/useAuth";
+import {
+  DashboardShell,
+  LoadingScreen,
+  PageTitle,
+} from "@/components/dashboard";
 
 // একটা booking দেখতে কেমন — repair ও technician populate হয়ে আসে
 interface Booking {
@@ -125,55 +131,50 @@ function BookingCard({ booking }: { booking: Booking }) {
 }
 
 export default function MyBookingsPage() {
+  const { user, checking } = useAuthGuard("customer");
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["my-bookings"],
+    enabled: !!user,
     queryFn: async () => {
       const res = await api.get("/bookings/my");
       return res.data.bookings as Booking[];
     },
   });
 
+  if (checking) return <LoadingScreen />;
+
   return (
-    <div className="min-h-screen bg-ink-50 p-8">
-      <div className="mx-auto max-w-3xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-ink-900">My Bookings</h1>
+    <DashboardShell user={user} width="md">
+      <PageTitle>My Bookings</PageTitle>
+
+      {isLoading && <p className="text-ink-500">Loading...</p>}
+
+      {isError && (
+        <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
+          Could not load your bookings. Please make sure you are logged in.
+        </p>
+      )}
+
+      {data && data.length === 0 && (
+        <div className="rounded-xl border border-ink-100 bg-white p-8 text-center">
+          <p className="text-ink-500">You have no bookings yet.</p>
           <Link
-            href="/dashboard"
-            className="text-sm font-medium text-brand-600 hover:underline"
+            href="/repair/my"
+            className="mt-2 inline-block font-medium text-brand-600 hover:underline"
           >
-            ← Dashboard
+            Go to your repair requests
           </Link>
         </div>
+      )}
 
-        {isLoading && <p className="text-ink-500">Loading...</p>}
-
-        {isError && (
-          <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
-            Could not load your bookings. Please make sure you are logged in.
-          </p>
-        )}
-
-        {data && data.length === 0 && (
-          <div className="rounded-xl border border-ink-100 bg-white p-8 text-center">
-            <p className="text-ink-500">You have no bookings yet.</p>
-            <Link
-              href="/repair/my"
-              className="mt-2 inline-block font-medium text-brand-600 hover:underline"
-            >
-              Go to your repair requests
-            </Link>
-          </div>
-        )}
-
-        {data && data.length > 0 && (
-          <div className="space-y-3">
-            {data.map((b) => (
-              <BookingCard key={b._id} booking={b} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+      {data && data.length > 0 && (
+        <div className="space-y-3">
+          {data.map((b) => (
+            <BookingCard key={b._id} booking={b} />
+          ))}
+        </div>
+      )}
+    </DashboardShell>
   );
 }

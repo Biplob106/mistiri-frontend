@@ -2,8 +2,13 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
 import { api } from "@/lib/api";
+import { useAuthGuard } from "@/lib/useAuth";
+import {
+  DashboardShell,
+  LoadingScreen,
+  PageTitle,
+} from "@/components/dashboard";
 
 // list-এ একেকটা technician দেখতে কেমন — user populate হয়ে আসে
 interface Technician {
@@ -32,6 +37,9 @@ const skillLabel: Record<string, string> = {
 };
 
 export default function TechniciansPage() {
+  // যেকোনো logged-in user technician list দেখতে পারে (role লাগে না)
+  const { user, checking } = useAuthGuard();
+
   // filter state — যা বাছাই হবে সেটা query-তে পাঠাব
   const [category, setCategory] = useState("");
   const [area, setArea] = useState("");
@@ -39,6 +47,7 @@ export default function TechniciansPage() {
   // filter বদলালে queryKey বদলায়, তাই TanStack নিজে থেকে আবার fetch করে
   const { data, isLoading, isError } = useQuery({
     queryKey: ["technicians", category, area],
+    enabled: !!user,
     queryFn: async () => {
       const params: Record<string, string> = {};
       if (category) params.category = category;
@@ -48,21 +57,15 @@ export default function TechniciansPage() {
     },
   });
 
-  return (
-    <div className="min-h-screen bg-ink-50 p-8">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-ink-900">Find a Technician</h1>
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium text-brand-600 hover:underline"
-          >
-            ← Dashboard
-          </Link>
-        </div>
+  if (checking) return <LoadingScreen />;
 
+  return (
+    <DashboardShell user={user} width="lg">
+      <PageTitle>Find a Technician</PageTitle>
+
+      <div className="space-y-6">
         {/* filter bar — category dropdown + area লেখার box */}
-        <div className="mb-6 flex flex-col gap-3 rounded-xl border border-ink-100 bg-white p-4 shadow-sm sm:flex-row">
+        <div className="flex flex-col gap-3 rounded-xl border border-ink-100 bg-white p-4 shadow-sm sm:flex-row">
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -167,6 +170,6 @@ export default function TechniciansPage() {
           </div>
         )}
       </div>
-    </div>
+    </DashboardShell>
   );
 }

@@ -4,6 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api";
+import { useAuthGuard } from "@/lib/useAuth";
+import { DashboardShell, LoadingScreen } from "@/components/dashboard";
 
 // একটা repair details দেখতে কেমন — customer populate হয়ে আসে,
 // diagnosis ও estimatedCost optional (থাকতে পারে, নাও পারে)
@@ -56,6 +58,7 @@ export default function RepairDetailsPage() {
   const params = useParams();
   const id = params.id as string;
   const queryClient = useQueryClient();
+  const { user, checking } = useAuthGuard("customer");
 
   // TanStack Query দিয়ে GET /repairs/:id call করো
   const { data, isLoading, isError } = useQuery({
@@ -91,15 +94,16 @@ export default function RepairDetailsPage() {
     },
   });
 
+  if (checking) return <LoadingScreen />;
+
   return (
-    <div className="min-h-screen bg-ink-50 p-8">
-      <div className="mx-auto max-w-3xl">
-        <Link
-          href="/repair/my"
-          className="mb-6 inline-block text-sm font-medium text-brand-600 hover:underline"
-        >
-          ← Back
-        </Link>
+    <DashboardShell user={user} width="md">
+      <Link
+        href="/repair/my"
+        className="mb-6 inline-block text-sm font-medium text-brand-600 hover:underline"
+      >
+        ← Back
+      </Link>
 
         {isLoading && <p className="text-ink-500">Loading...</p>}
 
@@ -254,7 +258,6 @@ export default function RepairDetailsPage() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+    </DashboardShell>
   );
 }
