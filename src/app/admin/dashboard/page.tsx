@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useAuthGuard } from "@/lib/useAuth";
@@ -31,6 +32,30 @@ export default function AdminDashboardPage() {
   return (
     <DashboardShell user={user}>
       <PageTitle>Admin Dashboard</PageTitle>
+
+      {/* management actions — এখান থেকেই verify/manage-এ যাওয়া যায় */}
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Link
+          href="/admin/technicians"
+          className="flex items-center justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-sm transition hover:border-brand-300"
+        >
+          <div>
+            <p className="font-semibold text-ink-900">Manage Technicians</p>
+            <p className="mt-1 text-sm text-ink-500">যাচাই (verify) ও তালিকা</p>
+          </div>
+          <span className="text-brand-600">→</span>
+        </Link>
+        <Link
+          href="/admin/users"
+          className="flex items-center justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-sm transition hover:border-brand-300"
+        >
+          <div>
+            <p className="font-semibold text-ink-900">Manage Users</p>
+            <p className="mt-1 text-sm text-ink-500">তালিকা ও মুছে ফেলা</p>
+          </div>
+          <span className="text-brand-600">→</span>
+        </Link>
+      </div>
 
       {isLoading && <p className="text-ink-500">Loading analytics...</p>}
 

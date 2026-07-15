@@ -7,6 +7,7 @@ import { api } from "./api";
 export type Role = "customer" | "technician" | "admin";
 
 export interface AuthUser {
+  _id?: string;
   name: string;
   email: string;
   role: Role;
