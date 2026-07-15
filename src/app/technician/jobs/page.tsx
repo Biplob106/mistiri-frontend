@@ -127,7 +127,7 @@ export default function TechnicianJobsPage() {
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-ink-900">My Jobs</h1>
           <Link
-            href="/dashboard"
+            href="/technician/dashboard"
             className="text-sm font-medium text-brand-600 hover:underline"
           >
             ← Dashboard
