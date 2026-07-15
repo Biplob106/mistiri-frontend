@@ -266,15 +266,16 @@ export function AnalyticsCharts({ stats }: { stats: Analytics }) {
                 cx="50%"
                 cy="50%"
                 outerRadius={90}
-                label={({ name, value }: { name?: string; value?: number }) =>
-                  `${name} (${value})`
-                }
+                // Recharts 3-এ ResponsiveContainer-এর ভেতর mount animation পাই
+                // চার্টকে radius 0-তে আটকে ফেলে (ফাঁকা দেখায়) — তাই বন্ধ রাখি
+                isAnimationActive={false}
               >
                 {stats.categoryDistribution.map((_, i) => (
                   <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip />
+              <Legend />
             </PieChart>
           </ResponsiveContainer>
         )}
