@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { dashboardPathFor, Role } from "@/lib/useAuth";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 
 // demo login-এর জন্য আগে থেকে seed করা account (npm run seed:demo)
 const DEMO = {
@@ -118,6 +119,9 @@ export default function LoginPage() {
             </button>
           </div>
         </div>
+
+        {/* Google Sign-In — client id সেট থাকলেই দেখাবে */}
+        <GoogleLoginButton />
 
         <p className="mt-6 text-center text-sm text-ink-500">
           Don&apos;t have an account?{" "}

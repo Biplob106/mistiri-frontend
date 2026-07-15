@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 
 // রেজিস্ট্রেশনে role বাছা যায় — customer বা technician
 const roles = [
@@ -124,6 +125,9 @@ export default function RegisterPage() {
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
+
+        {/* Google Sign-In — client id সেট থাকলেই দেখাবে */}
+        <GoogleLoginButton />
 
         <p className="mt-6 text-center text-sm text-ink-500">
           Already have an account?{" "}
