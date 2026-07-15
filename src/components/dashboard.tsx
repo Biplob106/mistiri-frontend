@@ -62,6 +62,7 @@ const NAV_LINKS: Record<Role, { href: string; label: string }[]> = {
     { href: "/admin/dashboard", label: "Dashboard" },
     { href: "/admin/technicians", label: "Technicians" },
     { href: "/admin/users", label: "Users" },
+    { href: "/admin/bookings", label: "Bookings" },
   ],
 };
 

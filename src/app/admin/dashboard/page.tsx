@@ -34,7 +34,7 @@ export default function AdminDashboardPage() {
       <PageTitle>Admin Dashboard</PageTitle>
 
       {/* management actions — এখান থেকেই verify/manage-এ যাওয়া যায় */}
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Link
           href="/admin/technicians"
           className="flex items-center justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-sm transition hover:border-brand-300"
@@ -52,6 +52,16 @@ export default function AdminDashboardPage() {
           <div>
             <p className="font-semibold text-ink-900">Manage Users</p>
             <p className="mt-1 text-sm text-ink-500">তালিকা ও মুছে ফেলা</p>
+          </div>
+          <span className="text-brand-600">→</span>
+        </Link>
+        <Link
+          href="/admin/bookings"
+          className="flex items-center justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-sm transition hover:border-brand-300"
+        >
+          <div>
+            <p className="font-semibold text-ink-900">All Bookings</p>
+            <p className="mt-1 text-sm text-ink-500">পুরো platform-এর booking</p>
           </div>
           <span className="text-brand-600">→</span>
         </Link>
