@@ -1,7 +1,9 @@
 import axios from "axios";
 
+// Production-এ Vercel-এর env var থেকে backend URL নিই;
+// env না থাকলে local dev-এর জন্য localhost fallback।
 export const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api",
 });
 
 // প্রতিটা request পাঠানোর আগে localStorage থেকে token নিয়ে
