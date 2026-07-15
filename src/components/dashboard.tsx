@@ -16,6 +16,7 @@ import {
   Legend,
 } from "recharts";
 import { AuthUser, Role, logout } from "@/lib/useAuth";
+import { SiteFooter } from "@/components/site";
 
 // customer আর admin — দুই analytics endpoint যে যে ফিল্ড ফেরত দেয়
 export interface Analytics {
@@ -119,23 +120,6 @@ export function NavBar({ user }: { user: AuthUser | null }) {
   );
 }
 
-// সব dashboard-এ একই footer
-export function Footer() {
-  return (
-    <footer className="mt-auto border-t border-ink-100 bg-white">
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-center justify-between gap-2 px-6 py-5 text-sm text-ink-500 sm:flex-row">
-        <span>
-          <span className="font-semibold text-brand-600">Mistiri</span> — স্মার্ট
-          হোম-মেইনটেন্যান্স
-        </span>
-        <Link href="/" className="hover:text-ink-900">
-          Home
-        </Link>
-      </div>
-    </footer>
-  );
-}
-
 // content-এর সর্বোচ্চ প্রস্থ — পেজভেদে আলাদা (form সরু, list চওড়া)
 const SHELL_WIDTHS = {
   sm: "max-w-2xl",
@@ -163,7 +147,7 @@ export function DashboardShell({
       >
         {children}
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }
