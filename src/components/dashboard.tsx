@@ -212,6 +212,35 @@ export function PageTitle({ children }: { children: React.ReactNode }) {
   return <h1 className="mb-6 text-2xl font-bold text-ink-900">{children}</h1>;
 }
 
+// data আসার আগে দেখানোর placeholder card (shimmer)
+export function SkeletonCard() {
+  return (
+    <div className="rounded-xl border border-ink-100 bg-white p-5 shadow-sm">
+      <div className="h-24 w-full animate-pulse rounded-lg bg-ink-100" />
+      <div className="mt-4 h-4 w-2/3 animate-pulse rounded bg-ink-100" />
+      <div className="mt-2 h-3 w-1/2 animate-pulse rounded bg-ink-100" />
+      <div className="mt-4 h-9 w-full animate-pulse rounded-lg bg-ink-100" />
+    </div>
+  );
+}
+
+// একগুচ্ছ skeleton card — loading অবস্থায় list-এর জায়গায় বসে
+export function SkeletonGrid({
+  count = 8,
+  cols = "sm:grid-cols-2 lg:grid-cols-4",
+}: {
+  count?: number;
+  cols?: string;
+}) {
+  return (
+    <div className={`grid grid-cols-1 gap-5 ${cols}`}>
+      {Array.from({ length: count }).map((_, i) => (
+        <SkeletonCard key={i} />
+      ))}
+    </div>
+  );
+}
+
 // customer ও admin dashboard-এ একই তিনটা চার্ট লাগে — তাই এক জায়গায়
 export function AnalyticsCharts({ stats }: { stats: Analytics }) {
   // status object → chart-এর array (নাম একটু পরিষ্কার করে)

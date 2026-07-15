@@ -59,6 +59,28 @@ export function useAuthGuard(allowedRole?: Role) {
   return { user, checking };
 }
 
+// public পেজের জন্য — login বাধ্যতামূলক নয়। token থাকলে user আনে,
+// না থাকলে/অকেজো হলে চুপচাপ null রাখে (কোথাও redirect করে না)।
+export function useOptionalAuth() {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    api
+      .get("/auth/me")
+      .then((res) => setUser(res.data.user))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { user, loading };
+}
+
 // logout — browser থেকে token/user মুছে login-এ পাঠায়
 export function logout(router: ReturnType<typeof useRouter>) {
   localStorage.removeItem("token");
