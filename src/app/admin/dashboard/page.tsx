@@ -6,9 +6,9 @@ import { useAuthGuard } from "@/lib/useAuth";
 import {
   Analytics,
   AnalyticsCharts,
-  DashboardHeader,
+  DashboardShell,
   LoadingScreen,
-  QuickLinks,
+  PageTitle,
   StatCard,
 } from "@/components/dashboard";
 
@@ -29,42 +29,29 @@ export default function AdminDashboardPage() {
   if (checking) return <LoadingScreen />;
 
   return (
-    <div className="min-h-screen bg-ink-50 p-8">
-      <div className="mx-auto max-w-5xl">
-        <DashboardHeader title="Admin Dashboard" user={user} />
+    <DashboardShell user={user}>
+      <PageTitle>Admin Dashboard</PageTitle>
 
-        {/* অ্যাডমিনের ব্যবস্থাপনার শর্টকাট */}
-        <QuickLinks
-          links={[
-            { href: "/technicians", label: "All Technicians" },
-            { href: "/bookings", label: "Bookings" },
-          ]}
-        />
+      {isLoading && <p className="text-ink-500">Loading analytics...</p>}
 
-        {isLoading && <p className="text-ink-500">Loading analytics...</p>}
+      {stats && (
+        <>
+          {/* platform-জুড়ে সংখ্যা */}
+          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            <StatCard label="Total Users" value={stats.totalUsers ?? 0} />
+            <StatCard label="Customers" value={stats.totalCustomers ?? 0} />
+            <StatCard label="Technicians" value={stats.totalTechnicians ?? 0} />
+            <StatCard
+              label="Verified Tech."
+              value={stats.verifiedTechnicians ?? 0}
+            />
+            <StatCard label="Repairs" value={stats.totalRepairs} />
+            <StatCard label="Bookings" value={stats.totalBookings ?? 0} />
+          </div>
 
-        {stats && (
-          <>
-            {/* platform-জুড়ে সংখ্যা */}
-            <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-              <StatCard label="Total Users" value={stats.totalUsers ?? 0} />
-              <StatCard label="Customers" value={stats.totalCustomers ?? 0} />
-              <StatCard
-                label="Technicians"
-                value={stats.totalTechnicians ?? 0}
-              />
-              <StatCard
-                label="Verified Tech."
-                value={stats.verifiedTechnicians ?? 0}
-              />
-              <StatCard label="Repairs" value={stats.totalRepairs} />
-              <StatCard label="Bookings" value={stats.totalBookings ?? 0} />
-            </div>
-
-            <AnalyticsCharts stats={stats} />
-          </>
-        )}
-      </div>
-    </div>
+          <AnalyticsCharts stats={stats} />
+        </>
+      )}
+    </DashboardShell>
   );
 }
